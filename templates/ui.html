@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Abuse Detection Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            padding: 40px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        textarea {
+            width: 80%;
+            height: 120px;
+            font-size: 16px;
+            padding: 10px;
+            margin-top: 20px;
+            resize: none;
+        }
+        button {
+            padding: 10px 20px;
+            margin-top: 15px;
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .result-box {
+            margin-top: 15px;
+            padding: 10px;
+            background: #fff;
+            border-radius: 6px;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧠 Abuse Detection AI</h1>
+    <p>Enter a comment to check if it's abusive or not:</p>
+
+    <textarea id="comment" placeholder="Type a comment here..."></textarea><br>
+    <button onclick="sendComment()">Detect</button>
+
+    <div id="result" class="result-box"></div>
+
+    <script>
+        async function sendComment() {
+            const comment = document.getElementById("comment").value.trim();
+            if (!comment) {
+                document.getElementById("result").innerText = "❗ Please enter a comment.";
+                return;
+            }
+
+            const response = await fetch("/predict", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ comment })
+            });
+
+            const data = await response.json();
+            if (data.result) {
+                document.getElementById("result").innerText = `Prediction: ${data.result}`;
+            } else {
+                document.getElementById("result").innerText = "⚠️ Something went wrong!";
+            }
+        }
+    </script>
+</body>
+</html>
